@@ -20,19 +20,8 @@ a. Set your token to the `CANVAS_API_TOKEN` field in the `.env` file (replace "y
 > becomes
 > `CANVAS_API_TOKEN=fdfjskSDFj3343jkasdaA...`
 
-or
-
-b. Delete the `.env` file and the Jupyter Notebook will prompt you to paste in your token as input (this is the more common way to input tokens for Ops tools)
 
 ## Output
-
-- if everything is setup correctly you should see an output like the following
-
-<div>
-    <img src="images/test-output.png" alt="Logo" width="350">
-</div>
-
-(instead displaying _your_ first name as it appears on Canvas)
 
 ## Getting Started - General Ops Method
 

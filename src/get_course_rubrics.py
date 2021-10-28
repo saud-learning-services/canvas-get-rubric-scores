@@ -3,6 +3,7 @@ from art import tprint
 import settings
 import getpass
 from interface import get_user_inputs
+import pandas as pd
 
 def _get_course_rubrics(course):
     rubrics = course.get_rubrics()
