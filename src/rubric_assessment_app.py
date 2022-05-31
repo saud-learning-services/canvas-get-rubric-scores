@@ -3,6 +3,7 @@ import pandas as pd
 import json
 import os
 from helpers import create_instance
+from initial_requests import get_initial_info
 
 #canvasapi 
 from canvasapi import Canvas
@@ -22,7 +23,19 @@ KEY = os.getenv('API_TOKEN')
 COURSE_ID = os.getenv('COURSE_ID')
 GRAPH_URL = f"{URL}/api/graphql"
 
+print(GRAPH_URL)
+
 canvas = create_instance(URL, KEY)
+
+def drop_down_div(list_of_dicts, dropdown_id, div_id):
+    first_value = list_of_dicts[0].get('value')
+    
+    html_div = html.Div([
+        dcc.Dropdown(options=list_of_dicts, value=first_value, id=dropdown_id),
+        html.Div(id=div_id)
+    ])
+    
+    return(html_div)
 
 def app():
 
@@ -44,6 +57,7 @@ def app():
                             html.Button('Submit', id='submit-course-id', n_clicks=0, style={'display': 'inline-block'})
                             ])]),
             html.Div(children='Enter your course id', id='course-details-display'),
+            html.Br(),
             html.Div(children=[], id='confirmed-course')
         ], 
         id='initial-input-course')
@@ -60,6 +74,7 @@ def app():
             return(
                 html.P(f'Error creating session. Confirm you have an active token and a green confirmation at the top noting "Token Valid: ... "', style={'color': 'red'})
             )
+
 
         if n_clicks > 0:
 
@@ -87,7 +102,27 @@ def app():
 
     def the_course_has_been_confirmed(n_clicks, value):
         if n_clicks >= 1:
-            return(f'okay, we get it you want that course {value}')
+            data = get_initial_info(GRAPH_URL, int(value), KEY)
+            assignments = data['data']['course']['assignmentsConnection']['nodes']
+            assignments_list = [{'label': i.get('name'), 'value': i.get('_id')} for i in assignments]
+
+            new_div = html.Div(children=[
+                drop_down_div(assignments_list, 'assignments-dropdown', 'assignments-dropdown-container'),
+                html.Div(children=[], id='selected-assignment')], id='assignments-selector-container')
+            
+            return(new_div)
+
+    @app.callback(
+        Output('selected-assignment', 'children'),
+        Input('assignments-dropdown', 'value')
+    )
+
+    def show_selected_assignment(assignment_value):
+        return(f'You selected: {assignment_value}')
+        
+
+
+
 
 
     app.run_server(mode='inline')
