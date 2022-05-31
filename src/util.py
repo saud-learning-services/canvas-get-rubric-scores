@@ -31,3 +31,11 @@ def shut_down(msg):
     cprint(f"\n{msg}\n", "red")
     print("Shutting down...")
     sys.exit()
+
+def print_success(msg):
+    """ Prints a nice message
+
+    Args:
+        msg (string): Message to print before continuing execution
+    """
+    cprint(f"\n{msg}\n", "green")

@@ -10,3 +10,4 @@ dependencies:
   - pip:
       - canvasapi>=2.0.0
       - art
+#TODO update this!
