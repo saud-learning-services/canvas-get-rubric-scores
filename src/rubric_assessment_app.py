@@ -55,6 +55,12 @@ def app():
         )
 
     def update_output(n_clicks, value):
+
+        if canvas==None:
+            return(
+                html.P(f'Error creating session. Confirm you have an active token and a green confirmation at the top noting "Token Valid: ... "', style={'color': 'red'})
+            )
+
         if n_clicks > 0:
 
             try:
@@ -81,7 +87,7 @@ def app():
 
     def the_course_has_been_confirmed(n_clicks, value):
         if n_clicks >= 1:
-            return('okay, we get it you want that course')
+            return(f'okay, we get it you want that course {value}')
 
 
     app.run_server(mode='inline')
