@@ -58,7 +58,7 @@ def app():
                             ])]),
             html.Div(children='Enter your course id', id='course-details-display'),
             html.Br(),
-            html.Div(children=[], id='confirmed-course')
+            html.Div(children=[], id='confirmed-course'),
         ], 
         id='initial-input-course')
         
@@ -83,7 +83,8 @@ def app():
                 return(
                     html.Div(children = [
                         html.P(f'You have selected: {course.name}', style={'color': 'green'}),
-                        html.Button(f'Confirm {course.name}', id='confirm-course', n_clicks=0)
+                        html.Button(f'Confirm {course.name}', id='confirm-course', n_clicks=0),
+                        dcc.Store(id="course-data")
                     ])
                     )
             except Exception as err:
@@ -95,7 +96,8 @@ def app():
             return(f'Please enter a course ID and press submit :D')
 
     @app.callback(
-        Output('confirmed-course', 'children'),
+        [Output('confirmed-course', 'children'),
+         Output('course-data', 'data')],
         Input('confirm-course', 'n_clicks'),
         State('input-course-id', 'value')
     )
@@ -110,15 +112,25 @@ def app():
                 drop_down_div(assignments_list, 'assignments-dropdown', 'assignments-dropdown-container'),
                 html.Div(children=[], id='selected-assignment')], id='assignments-selector-container')
             
-            return(new_div)
+            return(new_div, data)
+
+        else:
+            raise PreventUpdate
 
     @app.callback(
         Output('selected-assignment', 'children'),
-        Input('assignments-dropdown', 'value')
+        [Input('assignments-dropdown', 'value'),
+        Input('course-data', 'data')]
     )
 
-    def show_selected_assignment(assignment_value):
-        return(f'You selected: {assignment_value}')
+    def show_selected_assignment(assignment_value, data):
+
+        if data is None:
+            raise PreventUpdate
+
+        assignments_info = data['data']['course']['assignmentsConnection']['nodes']
+        
+        return(f'You selected: {assignment_value}: \n{assignments_info}')
         
 
 
