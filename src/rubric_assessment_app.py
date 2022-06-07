@@ -2,7 +2,7 @@ import random
 import pandas as pd
 import json
 import os
-from helpers import create_instance
+from helpers import create_instance, _return_single_dict_match
 from initial_requests import get_initial_info
 
 #canvasapi 
@@ -129,8 +129,12 @@ def app():
             raise PreventUpdate
 
         assignments_info = data['data']['course']['assignmentsConnection']['nodes']
+        assignment = _return_single_dict_match(assignments_info, "_id", str(assignment_value))
+
+        new_html = html.Div([html.H1(assignment_value),
+        html.P(str(assignment))], id="returning-assignment-details")
         
-        return(f'You selected: {assignment_value}: \n{assignments_info}')
+        return(new_html)
         
 
 
