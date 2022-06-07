@@ -2,7 +2,7 @@ import random
 import pandas as pd
 import json
 import os
-from helpers import create_instance, _return_single_dict_match
+from helpers import create_instance, _return_single_dict_match, get_rubric_assessment
 from initial_requests import get_initial_info
 
 #canvasapi 
@@ -10,7 +10,7 @@ from canvasapi import Canvas
 
 # DASH
 from jupyter_dash import JupyterDash
-from dash import dcc, html
+from dash import dcc, html, dash_table
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
@@ -110,7 +110,9 @@ def app():
 
             new_div = html.Div(children=[
                 drop_down_div(assignments_list, 'assignments-dropdown', 'assignments-dropdown-container'),
-                html.Div(children=[], id='selected-assignment')], id='assignments-selector-container')
+                html.Div(children=[], id='selected-assignment'), 
+                html.Div(children=[], id='table-container')],
+                id='assignments-selector-container')
             
             return(new_div, data)
 
@@ -136,11 +138,19 @@ def app():
 
         if rubric is None:
             rubric_title = "No Rubric"
+
         else:    
             rubric_title = rubric.get("title")
+            submissions = assignment.get("submissionsConnection").get("nodes")
+
+            reviews_list = [get_rubric_assessment(i) for i in submissions]
+
+            reviews_df = pd.DataFrame(reviews_list)
+            print(reviews_df)
 
         new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
-                            html.H4(f"Rubric: {rubric_title}")], id="returning-assignment-details")
+                            html.H4(f"Rubric: {rubric_title}")],
+                          id="returning-assignment-details")
         
         return(new_html)
         
