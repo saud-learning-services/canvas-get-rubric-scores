@@ -131,8 +131,16 @@ def app():
         assignments_info = data['data']['course']['assignmentsConnection']['nodes']
         assignment = _return_single_dict_match(assignments_info, "_id", str(assignment_value))
 
-        new_html = html.Div([html.H1(assignment_value),
-        html.P(str(assignment))], id="returning-assignment-details")
+        assignment_name = assignment.get("name")
+        rubric = assignment.get("rubric")
+
+        if rubric is None:
+            rubric_title = "No Rubric"
+        else:    
+            rubric_title = rubric.get("title")
+
+        new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
+                            html.H4(f"Rubric: {rubric_title}")], id="returning-assignment-details")
         
         return(new_html)
         
