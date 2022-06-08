@@ -162,7 +162,7 @@ def app():
                     submissions = assignment.get("submissionsConnection").get("nodes")
 
                     reviews_list = [get_rubric_assessment(i) for i in submissions]
-                    
+
                     df = pd.DataFrame(reviews_list)
                     df = df.drop(["points", "descriptions", "comments"], axis=1)
 
@@ -179,9 +179,9 @@ def app():
 
                     return(new_html, reviews_list)
 
-                except:
+                except Exception as err:
                     return(html.Div([html.H3(f"{assignment_name} ({assignment_value})"), html.H4(f"Rubric: {rubric_title}"), 
-                    html.P("This rubric has no assessment data.")]), 
+                    html.P(f"This rubric has no assessment data. {err}")]), 
                     None)
 
     @app.callback(

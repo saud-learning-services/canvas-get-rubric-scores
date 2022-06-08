@@ -34,11 +34,6 @@ def _return_single_dict_match(some_list, match_key, match_val):
 
 def get_rubric_assessment(submission):
     user = submission["user"]
-    user_name = user["name"]
-    user_id = user["_id"]
-    user_sis = user["sisId"]
-    score = submission["score"]
-    attempt = submission["attempt"]
     
     new_dict = {"user_id":  user["_id"],
            "user_name":  user["name"],
@@ -51,6 +46,9 @@ def get_rubric_assessment(submission):
     try:
         rubric_details = submission["rubricAssessmentsConnection"]["nodes"]
         
+        if rubric_details == []:
+            return(new_dict)
+
         for i in rubric_details:
             assessment_ratings = i.get("assessmentRatings")
             
