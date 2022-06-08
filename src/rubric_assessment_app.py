@@ -108,6 +108,7 @@ def app():
         if n_clicks >= 1:
             data = get_initial_info(GRAPH_URL, int(value), KEY)
             assignments = data['data']['course']['assignmentsConnection']['nodes']
+            #TODO only return assignments with rubrics in list
             assignments_list = [{'label': i.get('name'), 'value': i.get('_id')} for i in assignments]
 
             new_div = html.Div(children=[
@@ -141,6 +142,7 @@ def app():
 
         if rubric is None:
             rubric_title = "No Rubric"
+            return("No rubric", None)
 
         else:    
             rubric_title = rubric.get("title")
@@ -182,7 +184,11 @@ def app():
     )
 
     def save_csv(reviews_data, button_clicks):
-        if button_clicks > 0:
+
+        if reviews_data is None:
+            PreventUpdate
+
+        elif button_clicks > 0:
             df = pd.DataFrame(reviews_data)
             csv_name = "my_csv.csv"
             return(f"Complete! See csv: {csv_name}", dcc.send_data_frame(df.to_csv, csv_name))
