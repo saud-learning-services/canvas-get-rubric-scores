@@ -1,7 +1,7 @@
 # Canvas Get Rubric
 
 > - name: canvas-get-rubric-scores
-> - runs-with: terminal
+> - runs-with: terminal in a Jupyter notebook
 > - python>=3.8
 > - canvasapi>=2.0.0
 
@@ -13,9 +13,9 @@ Project to extract rubric and details from Canvas course. Developed initially fo
 
 You will need to give this tool an active Canvas API token for it to work. There are two methods of doing this (we recommend getting familiar with both):
 
-a. Set your token to the `API_TOKEN` field in the `.env` file (replace "your-token-here")
+a. Set your token to the `API_TOKEN` field in the `.env` file (replace "yourTokenHere")
 
-> `API_TOKEN=your-token-here`
+> `API_TOKEN=yourTokenHere`
 > becomes
 > `API_TOKEN=fdfjskSDFj3343jkasdaA...`
 
