@@ -1,4 +1,4 @@
-# Canvas Get Rubric
+# Canvas Get Rubric Scores
 ⛔️ IN DEVELOPMENT - USE AT YOUR OWN RISK ⛔️
 
 > - name: canvas-get-rubric-scores
