@@ -8,7 +8,7 @@
 
 ## Summary
 
-Project to extract rubric and details from a selected Canvas course. 
+Project to extract rubric assessment details from a selected Canvas course. 
 
 ## Input
 
