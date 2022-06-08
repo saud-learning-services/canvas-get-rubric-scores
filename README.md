@@ -8,11 +8,16 @@
 
 ## Summary
 
-Project to extract rubric and details from Canvas course. Developed initially for Sauder AOL
+Project to extract rubric and details from a selected Canvas course. 
 
 ## Input
 
-You will need to give this tool an active Canvas API token for it to work. There are two methods of doing this (we recommend getting familiar with both):
+You will need to give this tool an active Canvas API token for it to work. To do so, you need to create a .env file with the following
+
+```
+API_TOKEN = 'yourTokenHere'
+API_INSTANCE = 'yourInstanceHere'
+```
 
 a. Set your token to the `API_TOKEN` field in the `.env` file (replace "yourTokenHere")
 
@@ -41,6 +46,6 @@ b. set your API_INSTANCE
 1. Make sure you are in the right directory: `$ pwd` if it isn't `..../canvas-get-rubric-scores` then you need to navigate to it: `$ cd {YOUR_PATH}/canvas-get-rubric-scores`
 2. Make sure you have your token (in .env - see [above](#input)
 3. Activate the environment: `$ conda activate canvas-get-rubric-scores`
-4. Launch jupyter: `$ jupyter notebook`
+4. Launch jupyter: `$ jupyter notebook` and open dash-app.ipynb
 5. Follow instructions
 6. You're basically a wizard now [🧙‍♀️](https://tenor.com/bo4Bs.gif)
