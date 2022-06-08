@@ -1,3 +1,9 @@
+import os
+import sys
+module_path = os.path.abspath(os.path.join('src/'))
+if module_path not in sys.path:
+    sys.path.append(module_path)
+
 import random
 import pandas as pd
 import json
@@ -134,46 +140,49 @@ def app():
         if data is None:
             raise PreventUpdate
 
-        assignments_info = data['data']['course']['assignmentsConnection']['nodes']
-        assignment = _return_single_dict_match(assignments_info, "_id", str(assignment_value))
+        else:
 
-        assignment_name = assignment.get("name")
-        rubric = assignment.get("rubric")
+            assignments_info = data['data']['course']['assignmentsConnection']['nodes']
+            assignment = _return_single_dict_match(assignments_info, "_id", str(assignment_value))
 
-        if rubric is None:
-            rubric_title = "No Rubric"
-            return("No rubric", None)
+            assignment_name = assignment.get("name")
+            rubric = assignment.get("rubric")
 
-        else:    
-            rubric_title = rubric.get("title")
+            if rubric is None:
+                rubric_title = "No Rubric"
+                return(html.P("No rubric found for this assignment."), None)
 
-            try:
-                #TODO show submissions count
-                #TODO show users with no submissions
-                #TODO check for incomplete rubrics
-                submissions = assignment.get("submissionsConnection").get("nodes")
+            else:    
+                rubric_title = rubric.get("title")
 
-                reviews_list = [get_rubric_assessment(i) for i in submissions]
-                
-                df = pd.DataFrame(reviews_list)
-                df = df.drop(["points", "descriptions", "comments"], axis=1)
+                try:
+                    #TODO show submissions count
+                    #TODO show users with no submissions
+                    #TODO check for incomplete rubrics
+                    submissions = assignment.get("submissionsConnection").get("nodes")
 
-                new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
-                html.H4(f"Rubric: {rubric_title}"),
-                dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns]),
-                html.Br(),
-                html.Div(
-                    [
-                        html.Button("Download CSV", id="btn_csv"),
-                        dcc.Download(id="download-dataframe-csv"),
-                        html.Div(children=[], id="final-output-container")
-                    ])], id="returning-assignment-details")
+                    reviews_list = [get_rubric_assessment(i) for i in submissions]
+                    
+                    df = pd.DataFrame(reviews_list)
+                    df = df.drop(["points", "descriptions", "comments"], axis=1)
 
-                return(new_html, reviews_list)
+                    new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
+                    html.H4(f"Rubric: {rubric_title}"),
+                    dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns]),
+                    html.Br(),
+                    html.Div(
+                        [
+                            html.Button("Download CSV", id="btn_csv", n_clicks=0),
+                            dcc.Download(id="download-dataframe-csv"),
+                            html.Div(children=[], id="final-output-container")
+                        ])], id="returning-assignment-details")
 
-            except:
-                return html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
-                html.H4(f"Rubric: {rubric_title}"), html.P("Error accessing submissions")])
+                    return(new_html, reviews_list)
+
+                except:
+                    return(html.Div([html.H3(f"{assignment_name} ({assignment_value})"), html.H4(f"Rubric: {rubric_title}"), 
+                    html.P("This rubric has no assessment data.")]), 
+                    None)
 
     @app.callback(
         Output('final-output-container', 'children'),
@@ -186,14 +195,15 @@ def app():
     def save_csv(reviews_data, button_clicks):
 
         if reviews_data is None:
-            PreventUpdate
+            raise PreventUpdate
 
         elif button_clicks > 0:
             df = pd.DataFrame(reviews_data)
             csv_name = "my_csv.csv"
             return(f"Complete! See csv: {csv_name}", dcc.send_data_frame(df.to_csv, csv_name))
+        
         else:
-            PreventUpdate
+           raise PreventUpdate
 
 
 
