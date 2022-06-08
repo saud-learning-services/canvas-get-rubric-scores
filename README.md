@@ -24,9 +24,9 @@ b. set your API_INSTANCE
 
 ## Output
 
-## Getting Started
+> TBD
 
-## Want to Try in Terminal?
+## Getting Started
 
 ### First Time (do once)
 
