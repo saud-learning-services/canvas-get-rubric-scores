@@ -1,5 +1,5 @@
 """
-PEER REVIEW SCRIPT: util
+util
 
 authors:
 @markoprodanovic
