@@ -24,6 +24,8 @@ COURSE_ID = os.getenv('COURSE_ID')
 GRAPH_URL = f"{URL}/api/graphql"
 
 print(GRAPH_URL)
+#df = pd.read_csv('https://raw.githubusercontent.com/plotly/datasets/master/solar.csv')
+
 
 canvas = create_instance(URL, KEY)
 
@@ -111,7 +113,7 @@ def app():
             new_div = html.Div(children=[
                 drop_down_div(assignments_list, 'assignments-dropdown', 'assignments-dropdown-container'),
                 html.Div(children=[], id='selected-assignment'), 
-                html.Div(children=[], id='table-container')],
+                dcc.Store(id='reviews-data')],
                 id='assignments-selector-container')
             
             return(new_div, data)
@@ -120,7 +122,8 @@ def app():
             raise PreventUpdate
 
     @app.callback(
-        Output('selected-assignment', 'children'),
+        [Output('selected-assignment', 'children'),
+        Output('reviews-data', 'data')],
         [Input('assignments-dropdown', 'value'),
         Input('course-data', 'data')]
     )
@@ -141,21 +144,50 @@ def app():
 
         else:    
             rubric_title = rubric.get("title")
-            submissions = assignment.get("submissionsConnection").get("nodes")
 
-            reviews_list = [get_rubric_assessment(i) for i in submissions]
+            try:
+                #TODO show submissions count
+                #TODO show users with no submissions
+                #TODO check for incomplete rubrics
+                submissions = assignment.get("submissionsConnection").get("nodes")
 
-            reviews_df = pd.DataFrame(reviews_list)
-            print(reviews_df)
+                reviews_list = [get_rubric_assessment(i) for i in submissions]
+                
+                df = pd.DataFrame(reviews_list)
+                df = df.drop(["points", "descriptions", "comments"], axis=1)
 
-        new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
-                            html.H4(f"Rubric: {rubric_title}")],
-                          id="returning-assignment-details")
-        
-        return(new_html)
-        
+                new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
+                html.H4(f"Rubric: {rubric_title}"),
+                dash_table.DataTable(df.to_dict('records'), [{"name": i, "id": i} for i in df.columns]),
+                html.Br(),
+                html.Div(
+                    [
+                        html.Button("Download CSV", id="btn_csv"),
+                        dcc.Download(id="download-dataframe-csv"),
+                        html.Div(children=[], id="final-output-container")
+                    ])], id="returning-assignment-details")
 
+                return(new_html, reviews_list)
 
+            except:
+                return html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
+                html.H4(f"Rubric: {rubric_title}"), html.P("Error accessing submissions")])
+
+    @app.callback(
+        Output('final-output-container', 'children'),
+        Output('download-dataframe-csv', 'data'),
+        Input('reviews-data', 'data'),
+        Input('btn_csv', 'n_clicks'),
+        prevent_initial_call=True
+    )
+
+    def save_csv(reviews_data, button_clicks):
+        if button_clicks > 0:
+            df = pd.DataFrame(reviews_data)
+            csv_name = "my_csv.csv"
+            return(f"Complete! See csv: {csv_name}", dcc.send_data_frame(df.to_csv, csv_name))
+        else:
+            PreventUpdate
 
 
 
