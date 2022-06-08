@@ -1,4 +1,5 @@
 # Canvas Get Rubric
+⛔️ IN DEVELOPMENT - USE AT YOUR OWN RISK ⛔️
 
 > - name: canvas-get-rubric-scores
 > - runs-with: terminal in a Jupyter notebook
