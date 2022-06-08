@@ -150,7 +150,7 @@ def app():
 
             if rubric is None:
                 rubric_title = "No Rubric"
-                return("No rubric", None)
+                return(html.P("No rubric found for this assignment."), None)
 
             else:    
                 rubric_title = rubric.get("title")
@@ -180,7 +180,8 @@ def app():
                     return(new_html, reviews_list)
 
                 except:
-                    return(html.Div([html.H3(f"{assignment_name} ({assignment_value})"), html.H4(f"Rubric: {rubric_title}")]), 
+                    return(html.Div([html.H3(f"{assignment_name} ({assignment_value})"), html.H4(f"Rubric: {rubric_title}"), 
+                    html.P("This rubric has no assessment data.")]), 
                     None)
 
     @app.callback(
@@ -194,7 +195,7 @@ def app():
     def save_csv(reviews_data, button_clicks):
 
         if reviews_data is None:
-           raise PreventUpdate
+            raise PreventUpdate
 
         elif button_clicks > 0:
             df = pd.DataFrame(reviews_data)
