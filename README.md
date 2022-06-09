@@ -20,6 +20,9 @@ API_TOKEN = 'yourTokenHere'
 API_INSTANCE = 'yourInstanceHere'
 ```
 
+Your .env file should be in this project folder
+<img width="540" alt="image" src="https://user-images.githubusercontent.com/22600917/172930834-c160322e-b583-4a08-a06c-1074360f17f8.png">
+
 a. Set your token to the `API_TOKEN` field in the `.env` file (replace "yourTokenHere")
 
 > `API_TOKEN=yourTokenHere`
@@ -28,6 +31,8 @@ a. Set your token to the `API_TOKEN` field in the `.env` file (replace "yourToke
 
 b. set your API_INSTANCE 
 > `API_INSTANCE = 'https://canvas.ubc.ca'`
+
+
 
 ## Output
 
