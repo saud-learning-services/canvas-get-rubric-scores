@@ -9,6 +9,7 @@
 ## Summary
 
 Project to extract rubric assessment details from a selected Canvas course. 
+Note - this should work for peer reviews with rubrics as well! 
 
 ## Input
 
