@@ -6,7 +6,7 @@ import os
 
 def _get_query_by_course(url, query, course_id, KEY):
     
-    r = requests.post(url, json={'query': query, "variables": {"id": f"{course_id}"}}, headers={'Authorization': f'Bearer {KEY}'})
+    r = requests.post(url, json={"query": query, "variables": {"id": f"{course_id}"}}, headers={"Authorization": f"Bearer {KEY}"})
     if r.status_code == 200:
         return(r.json())
     else:
@@ -98,11 +98,11 @@ def get_initial_info(url, course_id, KEY):
     try:
         
         all_json = _get_query_by_course(url, query, course_id, KEY)
-        #assignments = all_json['data']['course']['assignmentsConnection']['nodes']
-        #group_sets = all_json['data']['course']['groupSetsConnection']['nodes']
-        #course = { your_key: all_json['data']['course'][your_key] for your_key in ['_id', 'id', 'courseCode', 'name'] }
-        #users = all_json['data']['course']['usersConnection']['nodes']
+        #assignments = all_json["data"]["course"]["assignmentsConnection"]["nodes"]
+        #group_sets = all_json["data"]["course"]["groupSetsConnection"]["nodes"]
+        #course = { your_key: all_json["data"]["course"][your_key] for your_key in ["_id", "id", "courseCode", "name"] }
+        #users = all_json["data"]["course"]["usersConnection"]["nodes"]
         return(all_json)
         
     except Exception as err:
-        print(f'Error: {err}')
+        print(f"Error: {err}")
