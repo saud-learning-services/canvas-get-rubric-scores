@@ -32,6 +32,7 @@ def _return_single_dict_match(some_list, match_key, match_val):
         return(out)
 
 
+
 def get_rubric_assessment(submission):
     user = submission["user"]
     
@@ -79,3 +80,61 @@ def get_rubric_assessment(submission):
     except Exception as err:
         print(f"Error: {err}")
 
+
+
+
+
+def _get_rubric_assessment_details(rubric_assessment):
+    
+    def __get_assessment_criteria_scores(assessment_rating):
+        criteria = assessment_rating.get("criterion").get("description")
+
+        ratings_dictionary = {criteria: assessment_rating.get("points")}
+        
+    #    ratings_dictionary = {f"{criteria}_json_": {"points": assessment_rating.get("points"),
+    #                                    "description": assessment_rating.get("description"),
+    #                                     "comment": assessment_rating.get("comments")},
+    #                         criteria: assessment_rating.get("points")}
+        
+        return(ratings_dictionary)
+
+    rubric_assessment_dict = {"assessment_id": rubric_assessment.get("_id")}
+    ratings = rubric_assessment.get("assessmentRatings")
+
+    for i in ratings:
+        rubric_assessment_dict.update(__get_assessment_criteria_scores(i))
+    
+    return(rubric_assessment_dict)
+    
+def _get_submission_details(submission):
+    user = submission.get("user")
+    
+    submission_dict = {"user_id":  user["_id"],
+                       "user_name":  user["name"],
+                       "user_sis_id": user["sisId"],
+                       "user_score": submission["score"],
+                       "submission_attempt": submission["attempt"],
+                       "submission_timestamp": submission["submittedAt"],
+                       "submission_status": submission["submissionStatus"]}   
+    
+    return(submission_dict)    
+
+
+def get_output_data(submissions):
+    my_list = []
+    
+    for i in submissions:
+    
+        rubric_assessments = i.get("rubricAssessmentsConnection").get("nodes")
+    
+        for j in rubric_assessments:
+
+            new_dict = {}
+
+            new_dict.update(_get_submission_details(i))
+            new_dict.update(_get_rubric_assessment_details(j))
+
+            my_list.append(new_dict)
+        
+    return(my_list)
+    

@@ -8,7 +8,7 @@ import random
 import pandas as pd
 import json
 import os
-from helpers import create_instance, _return_single_dict_match, get_rubric_assessment
+from helpers import create_instance, _return_single_dict_match, get_rubric_assessment, get_output_data
 from initial_requests import get_initial_info
 
 #canvasapi 
@@ -161,10 +161,13 @@ def app():
                     #TODO check for incomplete rubrics
                     submissions = assignment.get("submissionsConnection").get("nodes")
 
-                    reviews_list = [get_rubric_assessment(i) for i in submissions]
+                    #reviews_list = [get_rubric_assessment(i) for i in submissions]
+                    #print(get_output_data(submissions))
+                    reviews_list = get_output_data(submissions)
+                    
 
                     df = pd.DataFrame(reviews_list)
-                    df = df.drop(["points", "descriptions", "comments"], axis=1)
+                    #df = df.drop(["points", "descriptions", "comments"], axis=1)
 
                     new_html = html.Div([html.H3(f"{assignment_name} ({assignment_value})"),
                     html.H4(f"Rubric: {rubric_title}"),
