@@ -72,6 +72,10 @@ def get_initial_info(url, course_id, KEY):
                 rubricAssessmentsConnection {
                 nodes {
                     _id
+                    assessor {
+                        _id
+                        name
+                    }
                     assessmentRatings {
                     _id
                     comments

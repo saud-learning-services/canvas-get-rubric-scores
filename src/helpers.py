@@ -82,23 +82,23 @@ def get_rubric_assessment(submission):
 
 
 
+def __get_assessment_criteria_scores(assessment_rating):
+    criteria = assessment_rating.get("criterion").get("description")
 
+    ratings_dictionary = {criteria: assessment_rating.get("points")}
+    
+#    ratings_dictionary = {f"{criteria}_json_": {"points": assessment_rating.get("points"),
+#                                    "description": assessment_rating.get("description"),
+#                                     "comment": assessment_rating.get("comments")},
+#                         criteria: assessment_rating.get("points")}
+    
+    return(ratings_dictionary)
 
 def _get_rubric_assessment_details(rubric_assessment):
-    
-    def __get_assessment_criteria_scores(assessment_rating):
-        criteria = assessment_rating.get("criterion").get("description")
+    rubric_assessment_dict = {"assessment_id": rubric_assessment.get("_id"),
+                             "assessor_name": rubric_assessment.get("assessor").get("name"),
+                             "assessor_id": rubric_assessment.get("assessor").get("_id")}
 
-        ratings_dictionary = {criteria: assessment_rating.get("points")}
-        
-    #    ratings_dictionary = {f"{criteria}_json_": {"points": assessment_rating.get("points"),
-    #                                    "description": assessment_rating.get("description"),
-    #                                     "comment": assessment_rating.get("comments")},
-    #                         criteria: assessment_rating.get("points")}
-        
-        return(ratings_dictionary)
-
-    rubric_assessment_dict = {"assessment_id": rubric_assessment.get("_id")}
     ratings = rubric_assessment.get("assessmentRatings")
 
     for i in ratings:
