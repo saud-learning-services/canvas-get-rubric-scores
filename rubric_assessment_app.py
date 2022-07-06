@@ -214,7 +214,7 @@ def app():
         Output("final-output-container", "children"),
         Output("download-dataframe-csv", "data"),
         Input("reviews-data", "data"),
-        Input("btn_csv", "n_clicks"),
+        Input("csv_download_button", "n_clicks"),
         prevent_initial_call=True
     )
 
