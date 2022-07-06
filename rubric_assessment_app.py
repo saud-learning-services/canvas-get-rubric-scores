@@ -38,6 +38,7 @@ canvas = create_instance(URL, KEY)
 
 
 def _drop_down_div(list_of_dicts, dropdown_id, div_id):
+    # Create an HTML dropdown list of a given dictionary
     first_value = list_of_dicts[0].get("value")
     
     html_div = html.Div([
@@ -60,20 +61,20 @@ def app():
             html.H1("Welcome!"),
             html.Div(
                 children=[
-                    html.H2("Input Course ID"),
+                    html.H2("Input Course ID:"),
                     html.Div(
                         children = [
-                            dcc.Input(id="input-course-id", type="number",
-                            style={"display": "inline-block"}),
+                            dcc.Input(id="input-course-id", type="number"),
                             html.Button("Submit", id="submit-course-id",
-                            n_clicks=0, style={"display": "inline-block"})
+                                        n_clicks=0
+                            )
                         ]
                     )
                 ]
             ),
             html.Div(children="Enter your course id",
-                     id="course-details-display"),
-            html.Br(),
+                     id="course-details-display"
+            ),
             html.Div(children=[], id="confirmed-course"),
         ], 
         id="initial-input-course"
@@ -115,7 +116,7 @@ def app():
                 )
             
         else:
-            return(f"Please enter a course ID and press submit :D")
+            return(html.P("Please enter a course ID and press submit :D"))
 
     @app.callback(
         [Output("confirmed-course", "children"),
@@ -136,6 +137,7 @@ def app():
 
             new_div = html.Div(
                 children=[
+                    html.H2("Select Assignment:"),
                     _drop_down_div(assignments_list, "assignments-dropdown",
                                   "assignments-dropdown-container"),
                     html.Div(children=[], id="selected-assignment"), 
@@ -167,7 +169,7 @@ def app():
             rubric = assignment.get("rubric")
 
             if rubric is None:
-                return(html.P("No rubric found for this assignment."), None)
+                return(html.P("No rubric found for this assignment.", id='no-rubric-message'), None)
 
             else:    
                 rubric_title = rubric.get("title")
@@ -183,13 +185,14 @@ def app():
                     df = pd.DataFrame(reviews_list)
 
                     new_html = html.Div([
-                        html.H3(f"""{assignment_name} ({assignment_value})"""),
-                        html.H4(f"Rubric: {rubric_title}"),
+                        html.Br(),
+                        html.H3(f"Selected Assignment: {assignment_name} (ID: {assignment_value})"),
+                        html.H3(f"Rubric: {rubric_title}"),
                         dash_table.DataTable(
                             df.to_dict("records"),
-                            [{"name": i, "id": i} for i in df.columns]
+                            [{"name": i, "id": i} for i in df.columns],
+                            id="rubric-datatable"
                         ),
-                        html.Br(),
                         html.Div([
                             html.Button("Download CSV", id="csv_download_button", n_clicks=0),
                             dcc.Download(id="download-dataframe-csv"),
@@ -203,8 +206,8 @@ def app():
                 except Exception as err:
                     return(
                         html.Div([
-                            html.H3(f"""{assignment_name} ({assignment_value})"""),
-                            html.H4(f"Rubric: {rubric_title}"), 
+                            html.H2(f"""{assignment_name} ({assignment_value})"""),
+                            html.H3(f"Rubric: {rubric_title}"), 
                             html.P(f"This rubric has no assessment data. {err}")
                             ]),
                             None
@@ -214,7 +217,7 @@ def app():
         Output("final-output-container", "children"),
         Output("download-dataframe-csv", "data"),
         Input("reviews-data", "data"),
-        Input("btn_csv", "n_clicks"),
+        Input("csv_download_button", "n_clicks"),
         prevent_initial_call=True
     )
 
