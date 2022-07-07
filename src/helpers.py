@@ -66,20 +66,6 @@ def return_single_dict_match(some_list, match_key, match_val):
     out = [d for d in some_list if _matches_dict_key_val(d, match_key, match_val)][0]
     return(out)
 
-def get_course_assignment_info(course_info):
-    """Return a dictionary with the course id, course name, and assignment name.
-
-    parameters:
-        course_info (json?)
-    
-    returns:
-        course_and_assignment_dict (dict)
-    """
-    course_and_assignment_dict = {"course_id":  course_info.get["_id"],
-                                  "course_name":  course_info.get["name"],
-                                  "assignment_name": course_info.get["assignmentsConnection"].get["nodes"].get["name"],
-    }
-    return course_and_assignment_dict
 
 def __get_assessment_criteria_scores(assessment_rating):
     # Create a dictionary which includes assessment criteria and points assigned

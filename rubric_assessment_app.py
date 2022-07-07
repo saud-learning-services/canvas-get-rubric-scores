@@ -10,6 +10,7 @@ module_path = os.path.abspath(os.path.join("src/"))
 if module_path not in sys.path:
     sys.path.append(module_path)
 import pandas as pd
+import datetime
 
 # canvasapi 
 from canvasapi import Canvas
@@ -242,9 +243,13 @@ def app():
             raise PreventUpdate
 
         elif button_clicks > 0:
-            
+            course = reviews_data[0]["course_name"]
+            assignment = reviews_data[0]["assignment_name"]
+            date = datetime.datetime.now()
+            today = date.strftime("%Y-%m-%d")
+
             df = pd.DataFrame(reviews_data)
-            csv_name = "my_csv.csv"
+            csv_name = f"{course}_{assignment}_{today}_rubric_scores.csv"
             return(
                 f"Complete! See csv: {csv_name}",
                 dcc.send_data_frame(df.to_csv, csv_name)
