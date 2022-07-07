@@ -21,7 +21,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 # Local imports
-from helpers import create_instance, return_single_dict_match, get_output_data
+from helpers import create_instance, return_single_dict_match, get_output_data, get_course_assignment_info
 from initial_requests import get_initial_info
 
 # Environment details
@@ -119,8 +119,7 @@ def app():
             return(html.P("Please enter a course ID and press submit :D"))
 
     @app.callback(
-        [Output("confirmed-course", "children"),
-         Output("course-data", "data")],
+        [Output("confirmed-course", "children"), Output("course-data", "data")],
         Input("confirm-course", "n_clicks"),
         State("input-course-id", "value")
     )
@@ -131,8 +130,7 @@ def app():
             data = get_initial_info(GRAPH_URL, int(value), KEY)
             assignments = data["data"]["course"]["assignmentsConnection"]["nodes"]
             assignments_list = [{"rubric": i.get("rubric"), "label": i.get("name"),
-                                "value": i.get("_id"),
-                                }
+                                "value": i.get("_id"),}
                                 for i in assignments
             ]
             # Filter out assignments with no rubric attached.
@@ -170,23 +168,36 @@ def app():
             raise PreventUpdate
 
         else:
+            course_info = data["data"]["course"]
+            
             assignments_info = data["data"]["course"]["assignmentsConnection"]["nodes"]
+
+            if assignment_value is None:
+                raise PreventUpdate
+
             assignment = return_single_dict_match(assignments_info, "_id", str(assignment_value))
-
+            
             assignment_name = assignment.get("name")
-            rubric = assignment.get("rubric")
+            rubric_title = assignment.get("rubric").get("title")
 
-            rubric_title = rubric.get("title")
+            course_assignment_dict = {
+                "course_id": course_info.get("_id"),
+                "course_name": course_info.get("name"),
+                "assignment_name": assignment_name
+            }
 
             try:
                 #TODO show submissions count
                 #TODO show users with no submissions
                 #TODO check for incomplete rubrics
                 submissions = assignment.get("submissionsConnection").get("nodes")
+                reviews_list = get_output_data(submissions)
 
-                reviews_list = get_output_data(submissions)                    
+                full_list = []
+                for entry in reviews_list:
+                    full_list.append(course_assignment_dict | entry)
 
-                df = pd.DataFrame(reviews_list)
+                df = pd.DataFrame(full_list)
 
                 new_html = html.Div([
                     html.Br(),
@@ -205,7 +216,7 @@ def app():
                     ], id="returning-assignment-details"
                 )
 
-                return(new_html, reviews_list)
+                return(new_html, full_list)
 
             except Exception as err:
                 return(
@@ -231,6 +242,7 @@ def app():
             raise PreventUpdate
 
         elif button_clicks > 0:
+            
             df = pd.DataFrame(reviews_data)
             csv_name = "my_csv.csv"
             return(

@@ -53,7 +53,7 @@ def _matches_dict_key_val(dict_, key, matches_val):
 
 
 def return_single_dict_match(some_list, match_key, match_val):
-    """Returns a single match in a dictionary.
+    """Return a single match in a dictionary.
 
     parameters:
         some_list (dict)
@@ -65,6 +65,21 @@ def return_single_dict_match(some_list, match_key, match_val):
     """
     out = [d for d in some_list if _matches_dict_key_val(d, match_key, match_val)][0]
     return(out)
+
+def get_course_assignment_info(course_info):
+    """Return a dictionary with the course id, course name, and assignment name.
+
+    parameters:
+        course_info (json?)
+    
+    returns:
+        course_and_assignment_dict (dict)
+    """
+    course_and_assignment_dict = {"course_id":  course_info.get["_id"],
+                                  "course_name":  course_info.get["name"],
+                                  "assignment_name": course_info.get["assignmentsConnection"].get["nodes"].get["name"],
+    }
+    return course_and_assignment_dict
 
 def __get_assessment_criteria_scores(assessment_rating):
     # Create a dictionary which includes assessment criteria and points assigned
@@ -88,7 +103,7 @@ def _get_rubric_assessment_details(rubric_assessment):
     return(rubric_assessment_dict)
     
 def _get_submission_details(submission):
-    # Create a dictionary including student information and submission details
+    # Create a dictionary including student information and submission details.
     user = submission.get("user")
     
     submission_dict = {"user_id":  user["_id"],
@@ -97,7 +112,8 @@ def _get_submission_details(submission):
                        "user_score": submission["score"],
                        "submission_attempt": submission["attempt"],
                        "submission_timestamp": submission["submittedAt"],
-                       "submission_status": submission["submissionStatus"]}   
+                       "submission_status": submission["submissionStatus"]
+    }   
     
     return(submission_dict)    
 
@@ -114,6 +130,8 @@ def get_output_data(submissions):
     output_data = []
 
     for i in submissions:   
+        
+        
         rubric_assessments = i.get("rubricAssessmentsConnection").get("nodes")
 
         for j in rubric_assessments:
