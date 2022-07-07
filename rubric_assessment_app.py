@@ -22,7 +22,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 # Local imports
-from helpers import create_instance, return_single_dict_match, get_output_data, get_course_assignment_info
+from helpers import create_instance, return_single_dict_match, get_output_data
 from initial_requests import get_initial_info
 
 # Environment details
