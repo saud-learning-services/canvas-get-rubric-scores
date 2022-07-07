@@ -38,7 +38,7 @@ canvas = create_instance(URL, KEY)
 
 
 def _drop_down_div(list_of_dicts, dropdown_id, div_id):
-    # Create an HTML dropdown list of a given dictionary
+    # Create an HTML dropdown list of a given dictionary.
     first_value = list_of_dicts[0].get("value")
     
     html_div = html.Div([
@@ -126,19 +126,27 @@ def app():
     )
 
     def course_is_confirmed(n_clicks, value):
-        # Display list of assignments in confirmed course
+        # Display list of assignments in confirmed course.
         if n_clicks >= 1:
             data = get_initial_info(GRAPH_URL, int(value), KEY)
             assignments = data["data"]["course"]["assignmentsConnection"]["nodes"]
-            #TODO only return assignments with rubrics in list
-            assignments_list = [{"label": i.get("name"), "value": i.get("_id")}
+            assignments_list = [{"rubric": i.get("rubric"), "label": i.get("name"),
+                                "value": i.get("_id"),
+                                }
                                 for i in assignments
             ]
+            # Filter out assignments with no rubric attached.
+            filtered_assignments_list = []
+            for entry in assignments_list:
+                if entry['rubric'] is not None:
+                    filtered_assignments_list.append(entry)
+                del entry['rubric']  # Further function requires two dictionary keys.
 
             new_div = html.Div(
                 children=[
                     html.H2("Select Assignment:"),
-                    _drop_down_div(assignments_list, "assignments-dropdown",
+                    html.P("This menu only includes assignments that have a rubric attached.", id="rubric-only-filter"),
+                    _drop_down_div(filtered_assignments_list, "assignments-dropdown",
                                   "assignments-dropdown-container"),
                     html.Div(children=[], id="selected-assignment"), 
                     dcc.Store(id="reviews-data")
@@ -157,7 +165,7 @@ def app():
     )
 
     def show_selected_assignment(assignment_value, data):
-        # Display dataframe for user-selected assignment
+        # Display dataframe for user-selected assignment.
         if data is None:
             raise PreventUpdate
 
@@ -168,50 +176,46 @@ def app():
             assignment_name = assignment.get("name")
             rubric = assignment.get("rubric")
 
-            if rubric is None:
-                return(html.P("No rubric found for this assignment.", id='no-rubric-message'), None)
+            rubric_title = rubric.get("title")
 
-            else:    
-                rubric_title = rubric.get("title")
+            try:
+                #TODO show submissions count
+                #TODO show users with no submissions
+                #TODO check for incomplete rubrics
+                submissions = assignment.get("submissionsConnection").get("nodes")
 
-                try:
-                    #TODO show submissions count
-                    #TODO show users with no submissions
-                    #TODO check for incomplete rubrics
-                    submissions = assignment.get("submissionsConnection").get("nodes")
+                reviews_list = get_output_data(submissions)                    
 
-                    reviews_list = get_output_data(submissions)                    
+                df = pd.DataFrame(reviews_list)
 
-                    df = pd.DataFrame(reviews_list)
+                new_html = html.Div([
+                    html.Br(),
+                    html.H3(f"Selected Assignment: {assignment_name} (ID: {assignment_value})"),
+                    html.H3(f"Rubric: {rubric_title}"),
+                    dash_table.DataTable(
+                        df.to_dict("records"),
+                        [{"name": i, "id": i} for i in df.columns],
+                        id="rubric-datatable"
+                    ),
+                    html.Div([
+                        html.Button("Download CSV", id="csv_download_button", n_clicks=0),
+                        dcc.Download(id="download-dataframe-csv"),
+                        html.Div(children=[], id="final-output-container")
+                        ])
+                    ], id="returning-assignment-details"
+                )
 
-                    new_html = html.Div([
-                        html.Br(),
-                        html.H3(f"Selected Assignment: {assignment_name} (ID: {assignment_value})"),
-                        html.H3(f"Rubric: {rubric_title}"),
-                        dash_table.DataTable(
-                            df.to_dict("records"),
-                            [{"name": i, "id": i} for i in df.columns],
-                            id="rubric-datatable"
-                        ),
-                        html.Div([
-                            html.Button("Download CSV", id="csv_download_button", n_clicks=0),
-                            dcc.Download(id="download-dataframe-csv"),
-                            html.Div(children=[], id="final-output-container")
-                            ])
-                        ], id="returning-assignment-details"
-                    )
+                return(new_html, reviews_list)
 
-                    return(new_html, reviews_list)
-
-                except Exception as err:
-                    return(
-                        html.Div([
-                            html.H2(f"""{assignment_name} ({assignment_value})"""),
-                            html.H3(f"Rubric: {rubric_title}"), 
-                            html.P(f"This rubric has no assessment data. {err}")
-                            ]),
-                            None
-                    )
+            except Exception as err:
+                return(
+                    html.Div([
+                        html.H2(f"""{assignment_name} ({assignment_value})"""),
+                        html.H3(f"Rubric: {rubric_title}"), 
+                        html.P(f"This rubric has no assessment data. {err}")
+                        ]),
+                        None
+                )
 
     @app.callback(
         Output("final-output-container", "children"),
@@ -222,7 +226,7 @@ def app():
     )
 
     def save_csv(reviews_data, button_clicks):
-        # Download .csv file of dataframe
+        # Download .csv file of dataframe.
         if reviews_data is None:
             raise PreventUpdate
 

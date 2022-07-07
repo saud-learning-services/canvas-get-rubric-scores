@@ -17,9 +17,8 @@ h3 {
 p {
     font-size:2vw;  /* Individual <p> elements have font colours in the main file. */
 }
-#no-rubric-message {
-    margin-top:1vw;  /* Adds extra space around "No rubric found..." message. */
-    margin-bottom:1vw;
+#rubric-only-filter {
+    margin-bottom:1vw;  /* Adds extra space around "This menu..." message. */
 }
 button {
     font-size:2vw;
