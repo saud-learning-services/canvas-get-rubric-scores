@@ -22,7 +22,7 @@ from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
 # Local imports
-from helpers import create_instance, return_single_dict_match, get_output_data, get_course_assignment_info
+from helpers import create_instance, return_single_dict_match, get_output_data
 from initial_requests import get_initial_info
 
 # Environment details
@@ -181,22 +181,30 @@ def app():
             assignment_name = assignment.get("name")
             rubric_title = assignment.get("rubric").get("title")
 
-            course_assignment_dict = {
+            course_assignment_info = {
                 "course_id": course_info.get("_id"),
                 "course_name": course_info.get("name"),
                 "assignment_name": assignment_name
             }
 
             try:
-                #TODO show submissions count
                 #TODO show users with no submissions
-                #TODO check for incomplete rubrics
                 submissions = assignment.get("submissionsConnection").get("nodes")
                 reviews_list = get_output_data(submissions)
 
+                incomplete_rubrics_counter = 0
+                for entry in reviews_list:
+                    exclude_keys = {'user_id', 'user_name','user_sis_id','user_score','submission_attempt',
+                                    'submission_timestamp', 'submission_status','assessment_id',
+                                    'assessor_name','assessor_id'}
+                    if any(item is None for item in [v for k, v in entry.items() if k not in exclude_keys]):
+                        incomplete_rubrics_counter = incomplete_rubrics_counter + 1
+
                 full_list = []
                 for entry in reviews_list:
-                    full_list.append(course_assignment_dict | entry)
+                    full_list.append(course_assignment_info | entry)
+
+                submission_count = len(full_list)
 
                 df = pd.DataFrame(full_list)
 
@@ -204,6 +212,8 @@ def app():
                     html.Br(),
                     html.H3(f"Selected Assignment: {assignment_name} (ID: {assignment_value})"),
                     html.H3(f"Rubric: {rubric_title}"),
+                    html.P(f"There are {submission_count} submissions for this assignment."),
+                    html.P(f"There are {incomplete_rubrics_counter} incomplete rubrics."),
                     dash_table.DataTable(
                         df.to_dict("records"),
                         [{"name": i, "id": i} for i in df.columns],

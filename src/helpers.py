@@ -115,8 +115,7 @@ def get_output_data(submissions):
     """
     output_data = []
 
-    for i in submissions:   
-        
+    for i in submissions:
         
         rubric_assessments = i.get("rubricAssessmentsConnection").get("nodes")
 
