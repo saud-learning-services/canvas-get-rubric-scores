@@ -1,0 +1,41 @@
+h1, h2, h3, p, div, input {
+    margin:0vw;  /* This limits the amount of whitespace between text to the minimum*/
+}
+h1 {
+    font-size:8vw;
+}
+h2 {
+    font-size:4vw;
+    margin-top:1vw;
+}
+h3 {
+    font-size:3vw;
+    font-weight:normal;
+    margin-bottom:1vw;
+}
+
+p {
+    font-size:2vw;  /* Individual <p> elements have font colours in the main file. */
+}
+#rubric-only-filter {
+    margin-bottom:1vw;  /* Adds extra space around "This menu..." message. */
+}
+button {
+    font-size:2vw;
+    display: inline-block;
+    margin-top:1vw;
+    margin-bottom:1vw;
+}
+#submit-course-id {
+    margin-left:1vw; /* Adds extra space between the button and course ID input box. */
+}
+div {
+    font-size:2vw;
+    border:1vw;
+}
+#rubric-datatable {
+    overflow-x:auto;
+}
+input {
+    font-size:2vw;
+}

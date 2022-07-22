@@ -1,41 +1,33 @@
-"""
-util
+"""Local utility module that handles printing error and success messages.
 
-authors:
-@markoprodanovic
-
-last edit:
-Monday, January 12, 2020
+This module exports the following functions:
+    print_error - prints and formats an error message.
+    print_success - prints and formats a success message.
 """
+# authors:
+# @markoprodanovic
+# 
+# last edit:
+# Monday, January 12, 2020
 
 from termcolor import cprint
 import sys
 
 
 def print_error(msg):
-    """ Prints the error message without shutting down the script
+    """ Print the error message without shutting down the script.
 
-    Args:
+    parameters:
         msg (string): Message to print before continuing execution
     """
     cprint(f"\n{msg}\n", "red")
 
 
-def shut_down(msg):
-    """ Shuts down the script.
-
-    Args:
-        msg (string): Message to print before printing "Shutting down..." 
-                      and exiting the script.
-    """
-    cprint(f"\n{msg}\n", "red")
-    print("Shutting down...")
-    sys.exit()
-
 def print_success(msg):
-    """ Prints a nice message
+    """ Print a message indicating success and continuation of script.
 
-    Args:
+    parameters:
         msg (string): Message to print before continuing execution
     """
     cprint(f"\n{msg}\n", "green")
+
