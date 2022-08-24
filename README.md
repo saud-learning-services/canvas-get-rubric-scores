@@ -8,7 +8,7 @@
 
 ## Summary
 
-Project to extract rubric assessment details from a selected Canvas course. 
+Project to extract rubric assessment details from a selected Canvas course into a .csv file. 
 Note - this should work for peer reviews with rubrics as well! 
 
 ## Input
@@ -38,12 +38,15 @@ b. set your API_INSTANCE to your Canvas Instance
 > `API_INSTANCE = 'https://canvas.ubc.ca'`
 
 The Jupyter Notebook tell you if the information in the .env file is correct.
+
 It will then ask you to input the Course ID.
 
 ## Output
 
-CourseName_AssignmentName_Date_rubric_scores.csv:
+### CourseName_AssignmentName_Date_rubric_scores.csv:
+
 _Lists of all rubrics used in scoring, including the following columns:_
+
 - **course_id:** id of the course
 - **course_name:** name of the course
 - **assignment_name:** name of the assignment
