@@ -8,11 +8,15 @@
 
 ## Summary
 
-Project to extract rubric assessment details from a selected Canvas course. 
+Project to extract rubric assessment details from a selected Canvas course into a .csv file. 
 Note - this should work for peer reviews with rubrics as well! 
 
 ## Input
 
+- Canvas Instance _(instance of Canvas being used - ex. https://ubc.instructure.com)_
+- Canvas API Token _(generate through Account => Settings)_
+- Course ID _(last digits of URL when visiting course page)_
+  
 You will need to give this tool an active Canvas API token for it to work. To do so, you need to create a .env file with the following
 
 ```
@@ -30,14 +34,32 @@ a. Set your token to the `API_TOKEN` field in the `.env` file (replace "yourToke
 > becomes
 > `API_TOKEN=fdfjskSDFj3343jkasdaA...`
 
-b. set your API_INSTANCE 
+b. set your API_INSTANCE to your Canvas Instance
 > `API_INSTANCE = 'https://canvas.ubc.ca'`
 
+The Jupyter Notebook tell you if the information in the .env file is correct.
 
+It will then ask you to input the Course ID.
 
 ## Output
 
-> TBD
+### CourseName_AssignmentName_Date_rubric_scores.csv:
+
+_Lists of all rubrics used in scoring, including the following columns:_
+
+- **course_id:** id of the course
+- **course_name:** name of the course
+- **assignment_name:** name of the assignment
+- **user_id:** id of the student being evaluated
+- **user_name:** name of the student being evaluated
+- **user_score:** assessment score
+- **submission_attempt:** how many attempts were taken to submit the assugnment
+- **submission_timestamp:** when the final submission was made
+- **submission_status:** sumbitted, late, unsubmitted, excused...
+- **assessment_id:** unique id of the rubric assessment
+- **assessor_name:** name of the assessor
+- **assessor_id:** id of the assessor
+- several columns of **criterion #** which indicate the score for that criterion
 
 ## Getting Started
 
