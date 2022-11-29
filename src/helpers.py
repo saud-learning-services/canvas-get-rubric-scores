@@ -69,9 +69,15 @@ def return_single_dict_match(some_list, match_key, match_val):
 
 def __get_assessment_criteria_scores(assessment_rating):
     # Create a dictionary which includes assessment criteria and points assigned
-    criteria = assessment_rating.get("criterion").get("description")
+    criteria = f'{assessment_rating.get("criterion").get("description")} ({assessment_rating.get("criterion").get("points")})'
     ratings_dictionary = {criteria: assessment_rating.get("points")}
     return(ratings_dictionary)
+
+def __get_assessment_criteria_comments(assessment_rating):
+    # Create a dictionary which includes assessment criteria and comments given 
+    criteria = f'{assessment_rating.get("criterion").get("description")} (comments)'
+    comments_dictionary = {criteria: assessment_rating.get("comments")}
+    return(comments_dictionary)
 
 def _get_rubric_assessment_details(rubric_assessment):
     # Append assessment and assessor details to criteria and points
@@ -85,6 +91,9 @@ def _get_rubric_assessment_details(rubric_assessment):
 
     for i in ratings:
         rubric_assessment_dict.update(__get_assessment_criteria_scores(i))
+    
+    for i in ratings:
+        rubric_assessment_dict.update(__get_assessment_criteria_comments(i))
     
     return(rubric_assessment_dict)
     
