@@ -140,18 +140,28 @@ def app():
                 if entry['rubric'] is not None:
                     filtered_assignments_list.append(entry)
                 del entry['rubric']  # Further function requires two dictionary keys.
+            
+            if filtered_assignments_list == []:
+                new_div = html.Div(
+                    children=[
+                        html.H2("There are no assignments with rubrics. 🤷‍♀️"),
+                        html.P("This menu only includes assignments that have a rubric attached.", id="rubric-only-filter"),
+                    ],
+                    id="assignments-selection-container"
+                )
 
-            new_div = html.Div(
-                children=[
-                    html.H2("Select Assignment:"),
-                    html.P("This menu only includes assignments that have a rubric attached.", id="rubric-only-filter"),
-                    _drop_down_div(filtered_assignments_list, "assignments-dropdown",
-                                  "assignments-dropdown-container"),
-                    html.Div(children=[], id="selected-assignment"), 
-                    dcc.Store(id="reviews-data")
-                ],
-                id="assignments-selection-container"
-            )
+            else: 
+                new_div = html.Div(
+                    children=[
+                        html.H2("Select Assignment:"),
+                        html.P("This menu only includes assignments that have a rubric attached.", id="rubric-only-filter"),
+                        _drop_down_div(filtered_assignments_list, "assignments-dropdown",
+                                    "assignments-dropdown-container"),
+                        html.Div(children=[], id="selected-assignment"), 
+                        dcc.Store(id="reviews-data")
+                    ],
+                    id="assignments-selection-container"
+                )
             
             return(new_div, data)
 
