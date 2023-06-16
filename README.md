@@ -20,8 +20,8 @@ Note - this should work for peer reviews with rubrics as well!
 You will need to give this tool an active Canvas API token for it to work. To do so, you need to create a .env file with the following
 
 ```
-API_TOKEN = 'yourTokenHere'
-API_INSTANCE = 'yourInstanceHere'
+API_TOKEN = "yourTokenHere"
+API_INSTANCE = "yourInstanceHere"
 ```
 
 Your .env file should be in this project folder:
@@ -30,12 +30,12 @@ Your .env file should be in this project folder:
 
 a. Set your token to the `API_TOKEN` field in the `.env` file (replace "yourTokenHere")
 
-> `API_TOKEN=yourTokenHere`
+> `API_TOKEN="yourTokenHere"`
 > becomes
-> `API_TOKEN=fdfjskSDFj3343jkasdaA...`
+> `API_TOKEN="fdfjskSDFj3343jkasdaA..."`
 
 b. set your API_INSTANCE to your Canvas Instance
-> `API_INSTANCE = 'https://canvas.ubc.ca'`
+> `API_INSTANCE = "https://canvas.ubc.ca"`
 
 The Jupyter Notebook tell you if the information in the .env file is correct.
 
