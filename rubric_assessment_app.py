@@ -16,7 +16,7 @@ import datetime
 from canvasapi import Canvas
 
 # DASH
-from jupyter_dash import JupyterDash
+from dash import Dash
 from dash import dcc, html, dash_table
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
@@ -54,7 +54,7 @@ def app():
     Select and show assignments and associated rubrics.  Allow download 
     of rubric .csv file.
     '''
-    app = JupyterDash(__name__)
+    app = Dash(__name__)
     app.config.suppress_callback_exceptions = True
 
     app.layout = html.Div(
