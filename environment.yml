@@ -14,5 +14,4 @@ dependencies:
   - pip:
       - canvasapi>=2.0.0
       - pick
-      - jupyter-dash
       - dash
